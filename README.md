@@ -62,3 +62,5 @@ graph TD
 - [ ] **Debugger Support:** Add a debugging tool that can interact with a debugger (e.g., Delve for Go).
 - [ ] **Version Control:** Enhance the version control tool to support more complex Git operations.
 - [ ] **Plugin System:** Develop a plugin system to allow for custom extensions and tools.
+- [ ] **Web Search:** Implement a tool for searching the web to gather information.
+- [ ] **Multi-LLM Support:** Allow configuration of different LLMs (e.g., Claude, Gemini).
