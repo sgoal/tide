@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 
 	openaai "github.com/sashabaranov/go-openai"
@@ -12,10 +13,11 @@ import (
 
 // ReActAgent is an agent that uses the ReAct framework to accomplish tasks.
 type ReActAgent struct {
-	client   *openaai.Client
-	tools    map[string]tool.Tool
-	maxLoops int
-	history  []openaai.ChatCompletionMessage
+	client    *openaai.Client
+	tools     map[string]tool.Tool
+	maxLoops  int
+	history   []openaai.ChatCompletionMessage
+	logWriter io.Writer
 }
 
 const historyFilePath = "conversation_history.json"
@@ -39,7 +41,7 @@ func (a *ReActAgent) LoadHistory() error {
 	return json.Unmarshal(data, &a.history)
 }
 
-func NewReActAgent() (*ReActAgent, error) {
+func NewReActAgent(logWriter io.Writer) (*ReActAgent, error) {
 	openAIKey := os.Getenv("OPENAI_API_KEY")
 	if openAIKey == "" {
 		return nil, fmt.Errorf("OPENAI_API_KEY environment variable not set")
@@ -65,6 +67,10 @@ func NewReActAgent() (*ReActAgent, error) {
 		client = openaai.NewClientWithConfig(config)
 	}
 
+	if logWriter == nil {
+		logWriter = io.Discard
+	}
+
 	return &ReActAgent{
 		client: client,
 		tools: map[string]tool.Tool{
@@ -72,7 +78,8 @@ func NewReActAgent() (*ReActAgent, error) {
 			"file_editor": &tool.FileEditorTool{},
 			"terminal":    &tool.TerminalTool{},
 		},
-		maxLoops: 10,
+		maxLoops:  10,
+		logWriter: logWriter,
 	}, nil
 }
 
@@ -164,7 +171,7 @@ func (a *ReActAgent) ProcessCommand(command string) (string, error) {
 			Tools:    tools,
 		}
 
-		fmt.Println("--- Sending request to OpenAI ---")
+		fmt.Fprintln(a.logWriter, "--- Sending request to OpenAI ---")
 		resp, err := a.client.CreateChatCompletion(context.Background(), req)
 		if err != nil {
 			return "", fmt.Errorf("chat completion error: %w", err)
@@ -174,19 +181,19 @@ func (a *ReActAgent) ProcessCommand(command string) (string, error) {
 		a.history = append(a.history, respMsg)
 
 		if respMsg.ToolCalls == nil {
-			fmt.Println("--- Received final answer ---")
+			fmt.Fprintln(a.logWriter, "--- Received final answer ---")
 			return respMsg.Content, nil
 		}
 
-		fmt.Printf("--- Received tool call: %s ---\n", respMsg.ToolCalls[0].Function.Name)
+		fmt.Fprintf(a.logWriter, "--- Received tool call: %s ---\n", respMsg.ToolCalls[0].Function.Name)
 		for _, toolCall := range respMsg.ToolCalls {
 			if tool, exists := a.tools[toolCall.Function.Name]; exists {
-				fmt.Printf("Executing tool: %s with args: %s\n", toolCall.Function.Name, toolCall.Function.Arguments)
+				fmt.Fprintf(a.logWriter, "Executing tool: %s with args: %s\n", toolCall.Function.Name, toolCall.Function.Arguments)
 				observation, err := tool.Execute(json.RawMessage(toolCall.Function.Arguments))
 				if err != nil {
 					observation = fmt.Sprintf("Error executing tool: %v", err)
 				}
-				fmt.Printf("Observation: %s\n", observation)
+				fmt.Fprintf(a.logWriter, "Observation: %s\n", observation)
 				a.history = append(a.history, openaai.ChatCompletionMessage{
 					Role:       openaai.ChatMessageRoleTool,
 					ToolCallID: toolCall.ID,
@@ -194,7 +201,7 @@ func (a *ReActAgent) ProcessCommand(command string) (string, error) {
 					Content:    observation,
 				})
 			} else {
-				fmt.Printf("Tool '%s' not found.\n", toolCall.Function.Name)
+				fmt.Fprintf(a.logWriter, "Tool '%s' not found.\n", toolCall.Function.Name)
 			}
 		}
 	}

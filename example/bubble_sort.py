@@ -16,6 +16,8 @@ def quick_sort(arr):
     return quick_sort(left) + middle + quick_sort(right)
 
 
+
+
 def swap_sort(arr):
     n = len(arr)
     for i in range(n):
@@ -24,7 +26,7 @@ def swap_sort(arr):
                 arr[i], arr[j] = arr[j], arr[i]
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     test_arr_bubble = [64, 34, 25, 12, 22, 11, 90]
     print("Bubble sort result:", end=" ")
     bubble_sort(test_arr_bubble)
@@ -37,5 +39,3 @@ if __name__ == "__main__":
 
     test_arr_swap = [64, 34, 25, 12, 22, 11, 90]
     print("Swap sort result:", end=" ")
-    swap_sort(test_arr_swap)
-    print(test_arr_swap)
