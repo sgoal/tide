@@ -16,4 +16,49 @@ The project is structured as follows:
     - `terminal.go`: A tool for executing shell commands.
 - `go.mod`, `go.sum`: Go module files for managing dependencies.
 - `conversation_history.json`: Stores the conversation history with the agent.
-- `bubble_sort.py`, `test_swap_sort.py`: Example Python scripts.
+- `example/`: Contains example scripts.
+
+### Future Architecture
+
+```mermaid
+graph TD
+    subgraph User Interface
+        A[Terminal UI]
+    end
+
+    subgraph Core
+        B[Main Loop]
+        C[ReAct Agent]
+        D[Tool Manager]
+    end
+
+    subgraph Tools
+        E[File System]
+        F[Code Executor]
+        G[Version Control]
+        H[Debugger]
+    end
+
+    subgraph Backend
+        I[Language Server Protocol]
+        J[AI Model (OpenAI)]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    D --> G
+    D --> H
+    C --> J
+    F --> I
+```
+
+## TODO
+
+- [ ] **Terminal UI:** Implement a more interactive terminal UI using a library like `tview` or `bubbletea`.
+- [ ] **LSP Integration:** Integrate with language servers for features like code completion, diagnostics, and go-to-definition.
+- [ ] **Debugger Support:** Add a debugging tool that can interact with a debugger (e.g., Delve for Go).
+- [ ] **Version Control:** Enhance the version control tool to support more complex Git operations.
+- [ ] **Plugin System:** Develop a plugin system to allow for custom extensions and tools.

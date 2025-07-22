@@ -33,6 +33,12 @@ func (t *FileEditorTool) Execute(args json.RawMessage) (string, error) {
 	filePath := filepath.Join(params.DirPath, params.FileName)
 	content, err := os.ReadFile(filePath)
 	if err != nil {
+		if os.IsNotExist(err) && params.SearchText == "" {
+			if err1 := os.WriteFile(filePath, []byte(params.ReplaceText), 0644); err1 != nil {
+				return "", fmt.Errorf("failed to create file: %w", err)
+			}
+			return fmt.Sprintf("Successfully created file: %s", filePath), nil
+		}
 		return "", fmt.Errorf("failed to read file: %w", err)
 	}
 

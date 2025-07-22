@@ -92,16 +92,20 @@ func (a *ReActAgent) ProcessCommand(command string) (string, error) {
 				Parameters: json.RawMessage(`{
 					"type": "object",
 					"properties": {
-						"filepath": {
+						"dir_path": {
 							"type": "string",
-							"description": "The path to the file to write."
+							"description": "The directory path to write the file to."
+						},
+						"file_name": {
+							"type": "string",
+							"description": "The name of the file to write."
 						},
 						"code": {
 							"type": "string",
 							"description": "The code to write to the file."
 						}
 					},
-					"required": ["filepath", "code"]
+					"required": ["dir_path", "file_name", "code"]
 				}`),
 			},
 		},
