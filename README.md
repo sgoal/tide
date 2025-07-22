@@ -91,3 +91,26 @@ To achieve our goal of creating a top-tier AI coding assistant, we are focusing 
     - Puppeteer for browser automation.
 
 - [ ] **Role-Based Personas:** Implement different AI personas that can be activated for specific tasks. For example, you could have a "debugger" persona for finding and fixing bugs, or a "refactor" persona for improving code quality.
+
+## Practicing Context Engineering
+
+A core philosophy of the Tide project is the practice of **Context Engineering**. This emerging discipline is crucial for maximizing the performance and accuracy of Large Language Models (LLMs). In Tide, we focus on three key pillars of Context Engineering:
+
+1.  **Prompt Engineering:** We meticulously craft and refine the prompts sent to the LLM to ensure that our instructions are clear, concise, and unambiguous. This allows the model to better understand the user's intent and generate more accurate and relevant responses.
+
+2.  **Context Management:** We are building a sophisticated system for managing the context of the conversation and the project. This includes maintaining a detailed history of the conversation, understanding the structure of the codebase, and tracking the state of the files being edited. This rich context allows the LLM to have a deeper understanding of the task at hand.
+
+3.  **Tool Chaining:** We are creating a powerful and flexible toolchain that the LLM can use to interact with the development environment. By chaining together different tools, the agent can perform complex tasks that would be impossible with a single tool. This includes everything from running tests and debugging code to managing version control and automating workflows.
+
+## Contributing
+
+Tide is an open-source project, and we welcome contributions from the community. Whether you're a seasoned Go developer, an expert in LLMs, or just passionate about the future of software development, we'd love to have you on board. This is a great opportunity to get hands-on experience with cutting-edge AI technologies and help shape the future of AI-powered development.
+
+Here are some ways you can contribute:
+
+- **Implement new features:** Take a look at our roadmap and pick a feature that interests you.
+- **Improve existing code:** Help us refactor and improve the quality of the codebase.
+- **Fix bugs:** Find and fix bugs to make Tide more stable and reliable.
+- **Write documentation:** Help us improve our documentation to make it easier for new users and contributors to get started.
+
+If you're interested in contributing, please fork the repository and submit a pull request. We look forward to working with you!
