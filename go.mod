@@ -1,4 +1,4 @@
-module ai-terminal-ide
+module github.com/sgoal/tide
 
 go 1.23.6
 
