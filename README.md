@@ -41,7 +41,7 @@ graph TD
 
     subgraph Backend
         I[Language Server Protocol]
-        J[AI Model (OpenAI)]
+        J["AI Model (OpenAI)"]
     end
 
     A --> B
