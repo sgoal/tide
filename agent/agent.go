@@ -77,6 +77,7 @@ func NewReActAgent(logWriter io.Writer) (*ReActAgent, error) {
 			"code_writer": &tool.CodeWriterTool{},
 			"file_editor": &tool.FileEditorTool{},
 			"terminal":    &tool.TerminalTool{},
+			"search":      &tool.SearchTool{},
 		},
 		maxLoops:  10,
 		logWriter: logWriter,
@@ -91,6 +92,23 @@ func (a *ReActAgent) ProcessCommand(command string) (string, error) {
 	})
 
 	tools := []openaai.Tool{
+		{
+			Type: openaai.ToolTypeFunction,
+			Function: &openaai.FunctionDefinition{
+				Name:        "search",
+				Description: "A tool for searching the web using DuckDuckGo.",
+				Parameters: json.RawMessage(`{
+					"type": "object",
+					"properties": {
+						"query": {
+							"type": "string",
+							"description": "The search query."
+						}
+					},
+					"required": ["query"]
+				}`),
+			},
+		},
 		{
 			Type: openaai.ToolTypeFunction,
 			Function: &openaai.FunctionDefinition{
@@ -192,6 +210,9 @@ func (a *ReActAgent) ProcessCommand(command string) (string, error) {
 				observation, err := tool.Execute(json.RawMessage(toolCall.Function.Arguments))
 				if err != nil {
 					observation = fmt.Sprintf("Error executing tool: %v", err)
+				}
+				if observation == "" {
+					observation = "No result found."
 				}
 				fmt.Fprintf(a.logWriter, "Observation: %s\n", observation)
 				a.history = append(a.history, openaai.ChatCompletionMessage{

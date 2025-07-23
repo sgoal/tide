@@ -55,7 +55,7 @@ graph TD
 
 To achieve our goal of creating a top-tier AI coding assistant, we are focusing on the following key areas. Our roadmap is heavily inspired by the capabilities of Claude Code, and we aim to implement similar features to provide a competitive and powerful tool.
 
-- [ ] **Interactive Terminal UI:** Implement a more interactive and user-friendly terminal UI using a library like `tview` or `bubbletea`. This will provide a more IDE-like experience with features like syntax highlighting, auto-completion, and inline diagnostics.
+- [x] **Interactive Terminal UI:** Implement a more interactive and user-friendly terminal UI using a library like `tview` or `bubbletea`. This will provide a more IDE-like experience with features like syntax highlighting, auto-completion, and inline diagnostics.
 
 - [ ] **LSP Integration:** Integrate with language servers via the Language Server Protocol (LSP). This will enable advanced code intelligence features, including:
     - Code completion
