@@ -84,13 +84,7 @@ func NewReActAgent(logWriter io.Writer) (*ReActAgent, error) {
 	}, nil
 }
 
-// ProcessCommand processes a command using the ReAct framework with native tool calling.
-func (a *ReActAgent) ProcessCommand(command string) (string, error) {
-	a.history = append(a.history, openaai.ChatCompletionMessage{
-		Role:    openaai.ChatMessageRoleUser,
-		Content: command,
-	})
-
+func getTools() []openaai.Tool {
 	tools := []openaai.Tool{
 		{
 			Type: openaai.ToolTypeFunction,
@@ -182,6 +176,16 @@ func (a *ReActAgent) ProcessCommand(command string) (string, error) {
 		},
 	}
 
+	return tools
+}
+
+// ProcessCommand processes a command using the ReAct framework with native tool calling.
+func (a *ReActAgent) ProcessCommand(command string) (string, error) {
+	a.history = append(a.history, openaai.ChatCompletionMessage{
+		Role:    openaai.ChatMessageRoleUser,
+		Content: command,
+	})
+	tools := getTools()
 	for i := 0; i < a.maxLoops; i++ {
 		req := openaai.ChatCompletionRequest{
 			Model:    openaai.GPT4o20240806,

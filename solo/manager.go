@@ -14,10 +14,10 @@ import (
 
 // ProjectType represents different types of projects
 const (
-	ProjectTypeStatic   = "static"
-	ProjectTypeReact    = "react"
-	ProjectTypeNextJS   = "nextjs"
-	ProjectTypeExpress  = "express"
+	ProjectTypeStatic    = "static"
+	ProjectTypeReact     = "react"
+	ProjectTypeNextJS    = "nextjs"
+	ProjectTypeExpress   = "express"
 	ProjectTypeFullStack = "fullstack"
 )
 
@@ -102,13 +102,13 @@ func (sm *SoloManager) StartSoloMode(requirement string) error {
 // parseRequirement analyzes the requirement and creates project configuration
 func (sm *SoloManager) parseRequirement(requirement string) (*ProjectConfig, error) {
 	config := &ProjectConfig{
-		Name:        sm.generateProjectName(requirement),
-		EnvVars:     make(map[string]string),
+		Name:    sm.generateProjectName(requirement),
+		EnvVars: make(map[string]string),
 	}
 
 	// Simple keyword-based project type detection
 	requirementLower := strings.ToLower(requirement)
-	
+
 	if strings.Contains(requirementLower, "react") {
 		config.Type = ProjectTypeReact
 		config.Platform = PlatformVercel
@@ -209,7 +209,7 @@ func getWorkspacePath() string {
 // generateProjectFiles generates all project files based on configuration
 func (sm *SoloManager) generateProjectFiles(projectPath string, config *ProjectConfig) error {
 	fmt.Fprintf(sm.logWriter, "📁 生成项目文件...\n")
-	
+
 	generator := NewProjectGenerator()
 	if err := generator.GenerateFiles(projectPath, config); err != nil {
 		return fmt.Errorf("生成项目文件失败: %w", err)
@@ -231,9 +231,9 @@ func (sm *SoloManager) generateProjectFiles(projectPath string, config *ProjectC
 // installDependencies installs project dependencies
 func (sm *SoloManager) installDependencies(projectPath string, config *ProjectConfig) error {
 	fmt.Fprintf(sm.logWriter, "📦 安装依赖...\n")
-	
+
 	var cmd *exec.Cmd
-	
+
 	switch config.Type {
 	case ProjectTypeReact, ProjectTypeNextJS, ProjectTypeExpress, ProjectTypeFullStack:
 		// Check if package.json exists
@@ -243,14 +243,14 @@ func (sm *SoloManager) installDependencies(projectPath string, config *ProjectCo
 			cmd.Dir = projectPath
 			cmd.Stdout = sm.logWriter
 			cmd.Stderr = sm.logWriter
-			
+
 			if err := cmd.Run(); err != nil {
 				// Try with yarn as fallback
 				cmd = exec.Command("yarn", "install")
 				cmd.Dir = projectPath
 				cmd.Stdout = sm.logWriter
 				cmd.Stderr = sm.logWriter
-				
+
 				if err := cmd.Run(); err != nil {
 					fmt.Fprintf(sm.logWriter, "⚠️  依赖安装失败，但项目已创建完成\n")
 					return nil // Continue with deployment
@@ -262,16 +262,16 @@ func (sm *SoloManager) installDependencies(projectPath string, config *ProjectCo
 		// No dependencies for static sites
 		fmt.Fprintf(sm.logWriter, "✅ 静态站点无需安装依赖\n")
 	}
-	
+
 	return nil
 }
 
 // deployProject handles the deployment process
 func (sm *SoloManager) deployProject(projectPath string, config *ProjectConfig) error {
 	fmt.Fprintf(sm.logWriter, "🚀 开始部署到 %s...\n", config.Platform)
-	
+
 	deployer := NewDeployer(projectPath, config)
-	
+
 	// Generate deployment configuration
 	if err := deployer.Deploy(); err != nil {
 		return fmt.Errorf("部署失败: %w", err)
@@ -284,20 +284,20 @@ func (sm *SoloManager) deployProject(projectPath string, config *ProjectConfig) 
 	fmt.Fprintf(sm.logWriter, "   类型: %s\n", config.Type)
 	fmt.Fprintf(sm.logWriter, "   平台: %s\n", config.Platform)
 	fmt.Fprintf(sm.logWriter, "   路径: %s\n", projectPath)
-	
+
 	// Print next steps
 	fmt.Fprintf(sm.logWriter, "\n📋 下一步操作:\n")
 	steps := deployer.GetNextSteps()
 	for i, step := range steps {
 		fmt.Fprintf(sm.logWriter, "   %d. %s\n", i+1, step)
 	}
-	
+
 	// Print expected URL
 	url := deployer.GetDeploymentURL()
 	if url != "" {
 		fmt.Fprintf(sm.logWriter, "\n🌐 预期访问地址: %s\n", url)
 	}
-	
+
 	return nil
 }
 
@@ -325,23 +325,23 @@ cd %s
 	case ProjectTypeReact, ProjectTypeNextJS:
 		readme += `npm install
 npm start
-`+"```"+`
+` + "```" + `
 
 ### 部署
-`+"```"+`bash
+` + "```" + `bash
 npm run build
 vercel --prod
-`+"```"+`
+` + "```" + `
 `
 	case ProjectTypeExpress:
 		readme += `npm install
 npm run dev
-`+"```"+`
+` + "```" + `
 
 ### 部署
-`+"```"+`bash
+` + "```" + `bash
 railway up
-`+"```"+`
+` + "```" + `
 `
 	case ProjectTypeStatic:
 		readme += `# 静态站点无需构建
@@ -353,7 +353,7 @@ railway up
 	case ProjectTypeFullStack:
 		readme += `npm install
 npm run dev
-`+"```"+`
+` + "```" + `
 
 ### 部署到Netlify
 1. 推送到GitHub仓库

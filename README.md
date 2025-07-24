@@ -92,6 +92,48 @@ To achieve our goal of creating a top-tier AI coding assistant, we are focusing 
 
 - [ ] **Role-Based Personas:** Implement different AI personas that can be activated for specific tasks. For example, you could have a "debugger" persona for finding and fixing bugs, or a "refactor" persona for improving code quality.
 
+## Solo Mode: Autonomous AI Developer
+
+Tide now features **Solo Mode**, a revolutionary capability that allows the AI agent to work autonomously on development tasks. In Solo Mode, the agent operates as a fully autonomous developer, capable of understanding complex requirements, planning implementation strategies, writing code, debugging, and even deploying projects without human intervention.
+
+### How Solo Mode Works
+
+Solo Mode leverages the ReAct (Reasoning + Acting) framework to create an intelligent agent that:
+
+1. **Understands Requirements:** Analyzes user input to understand the full scope of the development task
+2. **Creates Strategic Plans:** Develops comprehensive implementation strategies with clear milestones
+3. **Writes Production-Ready Code:** Generates, tests, and refines code based on best practices
+4. **Self-Debugs:** Identifies and fixes issues through iterative testing and analysis
+5. **Deploys Solutions:** Can deploy completed projects to various platforms
+6. **Reflects and Improves:** Continuously learns from outcomes to improve future performance
+
+### Key Features
+
+- **Full Autonomy:** Complete end-to-end development without human intervention
+- **Dynamic Tool Discovery:** Automatically discovers and utilizes all available development tools
+- **Context-Aware Planning:** Maintains deep understanding of project context throughout the process
+- **Iterative Refinement:** Continuously improves solutions through cycles of implementation and testing
+- **Multi-Language Support:** Capable of working with various programming languages and frameworks
+- **Deployment Ready:** Can handle the entire lifecycle from development to deployment
+
+### Usage
+
+Activate Solo Mode by running:
+
+```bash
+go run . --solo
+```
+
+The agent will then prompt you for your development task and begin autonomous execution.
+
+### Example Use Cases
+
+- **New Project Creation:** "Create a RESTful API service with user authentication and database integration"
+- **Feature Implementation:** "Add real-time chat functionality to my existing web application"
+- **Bug Fixes:** "Fix the memory leak in my data processing pipeline"
+- **Refactoring:** "Refactor my monolithic application into microservices architecture"
+- **Deployment:** "Deploy my React application to AWS with CI/CD pipeline"
+
 ## Practicing Context Engineering
 
 A core philosophy of the Tide project is the practice of **Context Engineering**. This emerging discipline is crucial for maximizing the performance and accuracy of Large Language Models (LLMs). In Tide, we focus on three key pillars of Context Engineering:

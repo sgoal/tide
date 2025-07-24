@@ -195,9 +195,9 @@ window.addEventListener('scroll', function() {
 
 	// Write files
 	files := map[string]string{
-		"index.html": indexHTML,
+		"index.html":    indexHTML,
 		"css/style.css": cssContent,
-		"js/main.js": jsContent,
+		"js/main.js":    jsContent,
 	}
 
 	return pg.writeFiles(projectPath, files)
@@ -338,10 +338,10 @@ export default App;`
 	}
 
 	files := map[string]string{
-		"package.json":     packageJSON,
-		"src/App.js":       appJS,
-		"src/App.css":      appCSS,
-		"src/index.js":     `import React from 'react';
+		"package.json": packageJSON,
+		"src/App.js":   appJS,
+		"src/App.css":  appCSS,
+		"src/index.js": `import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -352,7 +352,7 @@ root.render(
     <App />
   </React.StrictMode>
 );`,
-		"src/index.css":    `body {
+		"src/index.css": `body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -413,8 +413,8 @@ export default function Home() {
 }`
 
 	files := map[string]string{
-		"package.json":      packageJSON,
-		"pages/index.js":    indexJS,
+		"package.json":   packageJSON,
+		"pages/index.js": indexJS,
 	}
 
 	return pg.writeFiles(projectPath, files)
@@ -666,7 +666,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/solo-app'
 func (pg *ProjectGenerator) writeFiles(projectPath string, files map[string]string) error {
 	for relativePath, content := range files {
 		fullPath := filepath.Join(projectPath, relativePath)
-		
+
 		// Create directory if it doesn't exist
 		dir := filepath.Dir(fullPath)
 		if err := os.MkdirAll(dir, 0755); err != nil {

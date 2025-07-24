@@ -12,32 +12,48 @@ import (
 func NewTUI() {
 	app := tview.NewApplication()
 
+	// Create a form for mode selection
+	form := tview.NewForm().
+		AddButton("Builder Mode", func() {
+			showBuilderMode(app)
+		}).
+		AddButton("SOLO Mode", func() {
+			showSoloMode(app)
+		}).
+		AddButton("Quit", func() {
+			app.Stop()
+		})
+
+	form.SetBorder(true).SetTitle("Select a mode").SetTitleAlign(tview.AlignCenter)
+
+	if err := app.SetRoot(form, true).EnableMouse(true).Run(); err != nil {
+		panic(err)
+	}
+}
+
+func showBuilderMode(app *tview.Application) {
 	textView := tview.NewTextView().
 		SetDynamicColors(true).
-		SetRegions(true).
-		SetWordWrap(true).
-		SetScrollable(true)
+		SetScrollable(true).
+		SetWordWrap(true)
 
+	textView.SetBorder(true).SetTitle("Tide")
 	textView.ScrollToEnd()
-
 	inputField := tview.NewInputField().
-		SetLabel("Enter a command: ").
+		SetLabel("> ").
 		SetFieldWidth(0)
 
-	flex := tview.NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(textView, 0, 1, false).
-		AddItem(inputField, 3, 0, true)
-
-	reactAgent, err := agent.NewReActAgent(textView)
+	agent, err := agent.NewReActAgent(textView)
 	if err != nil {
-		fmt.Fprintf(textView, "Error: %v\n", err)
+		app.QueueUpdateDraw(func() {
+			fmt.Fprintf(textView, "[red]Error:[white] %v\n", err)
+		})
 	} else {
-		err = reactAgent.LoadHistory()
+		err = agent.LoadHistory()
 		if err != nil {
 			fmt.Fprintf(textView, "Error loading history: %v\n", err)
 		}
-		for _, msg := range reactAgent.GetHistory() {
+		for _, msg := range agent.GetHistory() {
 			fmt.Fprintf(textView, "[yellow]%s:[white] %s\n", msg.Role, msg.Content)
 		}
 		textView.ScrollToEnd()
@@ -45,37 +61,75 @@ func NewTUI() {
 
 	inputField.SetDoneFunc(func(key tcell.Key) {
 		if key == tcell.KeyEnter {
-			command := inputField.GetText()
-			if strings.TrimSpace(command) == "" {
+			prompt := inputField.GetText()
+			if strings.TrimSpace(prompt) == "" {
 				return
 			}
-
-			fmt.Fprintf(textView, "[blue]You:[white] %s\n", command)
 			inputField.SetText("")
 			textView.ScrollToEnd()
-
 			go func() {
-				if reactAgent == nil {
+				response, err := agent.ProcessCommand(prompt)
+				if err != nil {
 					app.QueueUpdateDraw(func() {
-						fmt.Fprintf(textView, "Agent not initialized. Please set OPENAI_API_KEY and restart.")
-					})
-					return
-				}
-				response, err := reactAgent.ProcessCommand(command)
-				app.QueueUpdateDraw(func() {
-					if err != nil {
 						fmt.Fprintf(textView, "[red]Error:[white] %v\n", err)
-					} else {
+					})
+				} else {
+					app.QueueUpdateDraw(func() {
 						fmt.Fprintf(textView, "[green]Agent:[white] %s\n", response)
-					}
-					reactAgent.SaveHistory()
-					textView.ScrollToEnd()
-				})
+					})
+				}
 			}()
 		}
 	})
 
-	if err := app.SetRoot(flex, true).Run(); err != nil {
-		panic(err)
+	flex := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(textView, 0, 1, false).
+		AddItem(inputField, 3, 0, true)
+
+	app.SetRoot(flex, true)
+}
+
+func showSoloMode(app *tview.Application) {
+	textView := tview.NewTextView().
+		SetDynamicColors(true).
+		SetScrollable(true).
+		SetWordWrap(true)
+
+	textView.SetBorder(true).SetTitle("SOLO Mode Output")
+
+	inputField := tview.NewInputField().
+		SetLabel("Enter your project requirement: ").
+		SetFieldWidth(0)
+
+	soloAgent, err := agent.NewSoloAgent(textView)
+	if err != nil {
+		app.QueueUpdateDraw(func() {
+			fmt.Fprintf(textView, "[red]Error:[white] %v\n", err)
+		})
 	}
+
+	inputField.SetDoneFunc(func(key tcell.Key) {
+		if key == tcell.KeyEnter {
+			requirement := inputField.GetText()
+			if strings.TrimSpace(requirement) == "" {
+				return
+			}
+			inputField.SetText("")
+			go func() {
+				if err := soloAgent.Run(requirement); err != nil {
+					app.QueueUpdateDraw(func() {
+						fmt.Fprintf(textView, "[red]Error:[white] %v\n", err)
+					})
+				}
+			}()
+		}
+	})
+
+	flex := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(textView, 0, 1, false).
+		AddItem(inputField, 3, 0, true)
+
+	app.SetRoot(flex, true)
 }
