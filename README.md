@@ -124,6 +124,12 @@ Activate Solo Mode by running:
 go run . --solo
 ```
 
+**⚠️ 重要提醒**：在部署到Vercel之前，请先确保已登录Vercel账号：
+```bash
+npm install -g vercel
+vercel login
+```
+
 The agent will then prompt you for your development task and begin autonomous execution.
 
 ### Example Use Cases
@@ -133,6 +139,36 @@ The agent will then prompt you for your development task and begin autonomous ex
 - **Bug Fixes:** "Fix the memory leak in my data processing pipeline"
 - **Refactoring:** "Refactor my monolithic application into microservices architecture"
 - **Deployment:** "Deploy my React application to AWS with CI/CD pipeline"
+
+### Visual Demo
+
+Here's a real-world example of Tide Solo Mode in action, creating a complete web application from scratch:
+
+**Step 1: Initial Setup**
+![Initial Setup](pics/step_1_cat_readme.png)
+
+**Step 2: Planning & Architecture**
+![Planning Phase](pics/plan_example.png)
+
+**Step 3: Code Generation**
+![Code Writing](pics/step_2_write_code_fail.png)
+
+**Step 4: Testing & Debugging**
+![Testing Phase](pics/step_3_refect_mkdir_rewrite_code.png)
+
+**Step 5: Deployment Process**
+![Deployment](pics/step_7_deploying.png)
+
+**Step 6: Live Application**
+![Deployed App](pics/step_8_deployed.png)
+
+**Bonus: Creating HTML Example**
+![HTML Creation](pics/create_html_example.png)
+
+**Mode Selection**
+![Mode Selection](pics/select_mode.png)
+
+Try the live demo at [https://website-leabfvf4d-maxlius-projects-479d6676.vercel.app](https://website-leabfvf4d-maxlius-projects-479d6676.vercel.app)
 
 ## Practicing Context Engineering
 
